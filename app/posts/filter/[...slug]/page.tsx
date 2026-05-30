@@ -1,23 +1,26 @@
 import { fetchPosts } from '@/lib/api';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from '@tanstack/react-query';
 import PostsClient from './Posts.client';
 
 interface PostsPageProps {
-  params: Promise<{slug:string[]}>
+  params: Promise<{ slug: string[] }>;
 }
 
-export default async function PostsPage({params}:PostsPageProps) {
-  const {slug} = await params;
+export default async function PostsPage({ params }: PostsPageProps) {
+  const searchQuery = '';
+  const currentPage = 1;
+
+  const { slug } = await params;
   const userId = slug[0];
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["posts", { searchQuery:"", currentPage:1, userId }],
-    queryFn: () =>  fetchPosts({ searchText:"", page:1, ...(userId !== 'All' && { userId }), }) 
-  }) 
+    queryKey: ['posts', searchQuery, currentPage, userId],
+    queryFn: () => fetchPosts({ searchText: '', page: 1, ...(userId !== 'All' && { userId }) }),
+  });
   return (
-  <HydrationBoundary state={dehydrate(queryClient)}>
-    <PostsClient userId={userId} /> 
-  </HydrationBoundary>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PostsClient userId={userId} />
+    </HydrationBoundary>
   );
 }

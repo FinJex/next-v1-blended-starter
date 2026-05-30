@@ -25,7 +25,7 @@ export default function PostsClient({ userId }: PostsClientProps) {
   const [editedPost, setEditedPost] = useState<Post | null>(null);
 
   const { data } = useQuery({
-    queryKey: ['posts', {searchQuery, currentPage, userId}],
+    queryKey: ['posts', searchQuery, currentPage, userId],
     queryFn: () =>
       fetchPosts({
         searchText: searchQuery,
@@ -33,7 +33,7 @@ export default function PostsClient({ userId }: PostsClientProps) {
         ...(userId !== 'All' && { userId }),
       }),
     placeholderData: keepPreviousData,
-    refetchOnMount:false,
+    refetchOnMount: false,
   });
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
@@ -48,7 +48,7 @@ export default function PostsClient({ userId }: PostsClientProps) {
     setSearchQuery(newQuery);
   }, 300);
 
-  const totalPages = data?.totalCount? Math.ceil(data.totalCount / 8): 0;
+  const totalPages = data?.totalCount ? Math.ceil(data.totalCount / 8) : 0;
   const posts = data?.posts ?? [];
 
   return (
